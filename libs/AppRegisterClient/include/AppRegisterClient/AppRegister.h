@@ -1,0 +1,39 @@
+#ifndef APP_REGISTER_CLIENT_APP_REGISTER
+#define APP_REGISTER_CLIENT_APP_REGISTER
+
+#include "AppRegisterCommon/AppRegister.h"
+
+//The application may be implemented in either C or C++
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+//Get controller pid
+pid_t getControllerPid(const char* controller_name);
+//Attach the application to the app_register
+struct app_data* registerAttach(const char* app_name, long double requested_throughput, int max_threads, bool gpu_implementation);
+//Detach the application from the app_register
+int registerDetach(struct app_data* data);
+
+//Send a tick to the register to which the application is connected
+void addTick(struct app_data*, int n_ticks);
+//Set requested throughput
+void setRequestedThroughput(struct app_data*, long double requested_throughput);
+//Get use_gpu
+bool getUseGpu(struct app_data* data);
+//Get precision_level 
+int getPrecisionLevel(struct app_data* data);
+//Get the u_sleep_time
+int getUSleepTime(struct app_data* data);
+//Get n_cpu_cores
+int getNCpuCores(struct app_data* data);
+
+//Sleep as to not overshoot the reference throughput
+void autosleep(struct app_data*, long double ref_thr);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif //APP_REGISTER_CLIENT_APP_REGISTER
