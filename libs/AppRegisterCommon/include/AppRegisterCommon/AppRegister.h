@@ -1,0 +1,95 @@
+#ifndef APP_REGISTER_COMMON_APP_REGISTER
+#define APP_REGISTER_COMMON_APP_REGISTER
+
+#include <sched.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/ipc.h>
+#include <sys/sem.h>
+
+// C code only
+// include bool type definition
+#ifndef __cplusplus
+#include <stdbool.h>
+#endif
+
+#define MAX_TICKS_SIZE 300
+#define MAX_NUM_OF_APPS 128
+#define MAX_NUM_OF_CPU_SETS 32
+#define MAX_NAME_SIZE 100
+#define DEFAULT_CONTROLLER_NAME "controller"
+#define ZERO_APPROX 1e-5
+
+/**
+ * A struct used to collect ticks
+ */
+struct tick
+{
+    long long value;  /**< total accumulated ticks */
+    long double time; /**< time elapsed since the application start */
+};
+
+/**
+ * A struct used to exchange performance data and actuation knobs
+ * between controller and application.
+ *
+ * Allocated by the application.
+ */
+struct app_data
+{
+    int segment_id;         /**< ID of the segment where this is stored */
+
+    struct tick ticks[MAX_TICKS_SIZE];  /**< sliding window of ticks */
+    int curr_tick;                      /**< position of the last tick */
+
+    long double requested_throughput;   /**< requested throughtput by the application */
+
+    long double lastTimeSample; /**< last timestamp that has been sampled. it is necessary to implement the autosleep function */
+    bool use_gpu;               /**< true if the app must use the GPU */
+    int n_cpu_cores;            /**< number of cpu cores available to the application*/
+    int u_sleep_time;           /**< in microseconds */
+    int precision_level;        /**< percentage of approximation */
+};
+
+/**
+ * A struct used to represent the app description.
+ *
+ * Is set by the application in the app_register upon attaching.
+ * May not be modified after initialization.
+ */
+struct app_descriptor
+{
+    pid_t pid;                    /**< the application pid */
+    char name[MAX_NAME_SIZE + 1]; /**< the name of the application */
+    int segment_id;               /**< the id of the memory segment containing the app_data */
+    bool gpu_implementation;      /**< true if the application has a GPU implementation */
+    int max_threads;              /**< maximum CPU threads used by the application */
+};
+
+/**
+ * A struct represent the status of the system.
+ *
+ * Is allocated by the controller.
+ */
+struct app_register
+{
+    struct app_descriptor new_apps[MAX_NUM_OF_APPS]; /**< newly attached apps adds themselves here */
+    int n_new;                                       /**< current number of newly attached apps */
+
+    pid_t detached_apps[MAX_NUM_OF_APPS]; /**< newly detacged apps add themselves here */
+    int n_detached;                       /**< current number of newly detached apps */
+};
+
+// semaphore management, data structure and wait/post functions.
+// The semaphore is used to access the monotor_t data structure in the shared memory since both the applications and the controller may write it
+union semun
+{
+    int val;
+    struct semid_ds *buf;
+    unsigned short int *array;
+    struct seminfo *__buf;
+};
+
+#endif //APP_REGISTER_COMMON_APP_REGISTER
