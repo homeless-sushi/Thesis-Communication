@@ -11,3 +11,6 @@ project(RtrmCommunication)
 
 #Run the CMake of libs/AppRegisterCommon
 add_subdirectory("libs/AppRegisterCommon")
+
+#Run the CMake of libs/AppRegisterServer
+add_subdirectory("libs/AppRegisterServer")
