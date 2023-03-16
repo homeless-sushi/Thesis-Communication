@@ -14,3 +14,6 @@ add_subdirectory("libs/AppRegisterCommon")
 
 #Run the CMake of libs/AppRegisterServer
 add_subdirectory("libs/AppRegisterServer")
+
+#Run the CMake of libs/AppRegisterClient
+add_subdirectory("libs/AppRegisterClient")
