@@ -127,7 +127,7 @@ void addTick(struct app_data *data, int value)
 pid_t getControllerPid(const char* controller_name) 
 {
     pid_t controller_pid;
-    std::string pipe = std::string("pgrep ") + controller_name;
+    std::string pipe = std::string("pgrep -i ") + controller_name;
     FILE *fp;
     fp = popen(pipe.c_str(), "r");
     if (fp == NULL){

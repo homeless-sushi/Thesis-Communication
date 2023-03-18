@@ -19,7 +19,7 @@
 #define MAX_NUM_OF_APPS 128
 #define MAX_NUM_OF_CPU_SETS 32
 #define MAX_NAME_SIZE 100
-#define DEFAULT_CONTROLLER_NAME "controller"
+#define DEFAULT_CONTROLLER_NAME "RtrmController"
 #define ZERO_APPROX 1e-5
 
 /**
