@@ -2,6 +2,7 @@
 #define APP_REGISTER_SERVER_POLICY
 
 #include "AppRegisterServer/AppRegister.h"
+#include "AppRegisterServer/App.h"
 
 #include <map>
 #include <memory>
@@ -13,21 +14,11 @@
 
 namespace Policy 
 {
-    class App
-    {
-        public:
-            struct app_descriptor descriptor;
-            struct app_data* data;
-
-            App(app_descriptor descriptor);
-            ~App();
-    };
-
     class Policy 
     {
         protected:
             struct app_register* appRegister;
-            std::map<pid_t, std::unique_ptr<App>> registeredApps;
+            std::map<pid_t, std::unique_ptr<App::App>> registeredApps;
 
             std::vector<pid_t> deregisterDeadApps();
             std::vector<pid_t> deregisterDetachedApps();

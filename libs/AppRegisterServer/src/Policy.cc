@@ -1,5 +1,6 @@
 #include "AppRegisterServer/AppRegister.h"
 #include "AppRegisterServer/AppUtils.h"
+#include "AppRegisterServer/App.h"
 #include "AppRegisterServer/Policy.h"
 #include "AppRegisterServer/CGroupUtils.h"
 
@@ -16,36 +17,6 @@
 
 namespace Policy 
 {
-    App::App(app_descriptor descriptor) :
-        descriptor(descriptor)
-    {
-        data = (struct app_data*) shmat(descriptor.segment_id, 0, 0);
-        if(data == (void*) -1){
-            std::cerr << "ERROR: While attaching app_data in shared memory!" << std::endl;
-        }
-
-        int error = CGroupUtils::Initialize(descriptor.pid);
-        if(error==-1){
-            std::cerr << "ERROR: While initializing CGroups" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    App::~App()
-    {
-        int errCtl = shmctl(descriptor.segment_id, IPC_RMID, 0);
-        int errDt = shmdt(data); 
-        if(errCtl == -1 || errDt == -1){
-            std::cerr << "ERROR: While detaching app_data from shared memory" << std::endl;
-        }
-
-        int error=CGroupUtils::Remove(descriptor.pid);
-        if (error==-1){
-            std::cerr << "ERROR: While removing CGroups" << std::endl;
-            exit(EXIT_FAILURE);
-        } 
-    }
-
     Policy::Policy(unsigned int nCores)
     {
         appRegister = AppRegister::registerCreate(nCores);
@@ -139,7 +110,7 @@ namespace Policy
         std::vector<pid_t> newApps;
         for(int i = 0; i < appRegister->n_new; i++){
             struct app_descriptor descriptor = appRegister->new_apps[i];
-            registeredApps[descriptor.pid] = std::unique_ptr<App>(new App(descriptor));
+            registeredApps[descriptor.pid] = std::unique_ptr<App::App>(new App::App(descriptor));
             newApps.push_back(descriptor.pid);
         }
         appRegister->n_new = 0;

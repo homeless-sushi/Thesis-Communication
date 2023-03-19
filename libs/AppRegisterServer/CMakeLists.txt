@@ -4,6 +4,7 @@ add_library(AppRegister_Server_Lib STATIC
     "src/AppRegister.cc"
     "src/AppData.cc"
     "src/AppUtils.cc"
+    "src/App.cc"
     "src/Policy.cc"
     "src/Utilization.cc"
     "src/Frequency.cc")
