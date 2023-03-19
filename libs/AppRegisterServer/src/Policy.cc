@@ -1,4 +1,5 @@
 #include "AppRegisterServer/AppRegister.h"
+#include "AppRegisterServer/AppUtils.h"
 #include "AppRegisterServer/Policy.h"
 #include "AppRegisterServer/CGroupUtils.h"
 
@@ -96,7 +97,7 @@ namespace Policy
         for(auto i = registeredApps.cbegin(), next_i = i; i != registeredApps.cend(); i = next_i){
             ++next_i;
             pid_t pid = i->first;
-            if(AppRegister::isAppRunning(pid)){
+            if(AppUtils::isAppRunning(pid)){
                 continue;
             }
             registeredApps.erase(i);
