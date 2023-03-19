@@ -41,30 +41,6 @@ namespace AppRegister
         // Initialize counters of applications
         app_register->n_new = 0;
         app_register->n_detached = 0;
-        //
-
-        // Setup CGroups
-        int error = CGroupUtils::Setup(numOfCores);
-        if(error==-1){
-            std::cerr << "ERROR: While setting up CGroup" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        //
-
-        // Map the controller on the first CPU cluster
-        error = CGroupUtils::Initialize(controller_pid);
-        if(error==-1){
-            std::cerr << "ERROR: While initializing CGroups" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        std::vector<int> cpu0({0});
-        error = CGroupUtils::UpdateCpuSet(controller_pid, cpu0);
-        if(error==-1){
-            std::cerr << "ERROR: While updating CGroups sets" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-
-        return app_register;
     }
 
     void registerDestroy(struct app_register* app_register) 
@@ -84,20 +60,6 @@ namespace AppRegister
         err = semctl(semid, 1, IPC_RMID, ignored_argument);
         if(semid == -1 || err == -1){
             std::cerr << "ERROR: While destroying app_register's semaphore" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        //
-
-        // Remove controller from CGroups
-        int error = CGroupUtils::Remove(controller_pid);
-        if(error==-1){
-            std::cerr << "ERROR: While removing controller from CGroups" << std::endl;
-            exit(EXIT_FAILURE);
-        }
-        // Destroy CGroups
-        error = CGroupUtils::Destroy();
-        if(error==-1){
-            std::cerr << "ERROR: While destroying CGroups" << std::endl;
             exit(EXIT_FAILURE);
         }
     }

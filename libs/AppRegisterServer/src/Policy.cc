@@ -48,11 +48,46 @@ namespace Policy
     Policy::Policy(unsigned int nCores)
     {
         appRegister = AppRegister::registerCreate(nCores);
+
+        // Setup CGroups
+        int error = CGroupUtils::Setup(nCores);
+        if(error==-1){
+            std::cerr << "ERROR: While setting up CGroup" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+
+        // Map the controller on the first CPU cluster
+        pid_t controller_pid = getpid();
+        error = CGroupUtils::Initialize(controller_pid);
+        if(error==-1){
+            std::cerr << "ERROR: While initializing CGroups" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        std::vector<int> cpu0({0});
+        error = CGroupUtils::UpdateCpuSet(controller_pid, cpu0);
+        if(error==-1){
+            std::cerr << "ERROR: While updating CGroups sets" << std::endl;
+            exit(EXIT_FAILURE);
+        }
     }
 
     Policy::~Policy()
     {
         AppRegister::registerDestroy(appRegister);
+
+        // Remove controller from CGroups
+        pid_t controller_pid = getpid();
+        int error = CGroupUtils::Remove(controller_pid);
+        if(error==-1){
+            std::cerr << "ERROR: While removing controller from CGroups" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+        // Destroy CGroups
+        error = CGroupUtils::Destroy();
+        if(error==-1){
+            std::cerr << "ERROR: While destroying CGroups" << std::endl;
+            exit(EXIT_FAILURE);
+        }
     }
 
     std::vector<pid_t> Policy::deregisterDeadApps()
