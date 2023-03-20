@@ -45,7 +45,9 @@ namespace Policy
 
     Policy::~Policy()
     {
-        AppRegister::registerDestroy(appRegister);
+        std::vector<pid_t> newApps = AppRegister::registerDestroy(appRegister);
+        for(pid_t newApp : newApps)
+            AppUtils::killApp(newApp);
 
         // Remove controller from CGroups
         pid_t controller_pid = getpid();
