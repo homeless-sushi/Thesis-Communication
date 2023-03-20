@@ -14,7 +14,7 @@ namespace AppRegister
     //Initialize app_register
     struct app_register* registerCreate(int numOfCores);
     //Destroy app_register
-    void registerDestroy(struct app_register* app_register);
+    std::vector<pid_t> registerDestroy(struct app_register* app_register);
 }
 
 #endif //APP_REGISTER_CONTROLLER_APP_REGISTER

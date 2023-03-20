@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <queue>
+#include <vector>
 
 #include <signal.h>
 #include <string.h>
@@ -45,9 +46,17 @@ namespace AppRegister
         return app_register;
     }
 
-    void registerDestroy(struct app_register* app_register) 
+    std::vector<pid_t> registerDestroy(struct app_register* app_register) 
     {
         pid_t controller_pid = getpid();
+        int semid = semget (controller_pid, 1, 0);
+        binarySemaphoreWait(semid);
+
+        // Get the newly registered apps
+        std::vector<pid_t> new_apps(app_register->n_new);
+        for(int i = 0; app_register->n_new; i++){
+            new_apps.push_back(app_register->new_apps[i].pid);
+        }
     
         // Detach and delete app_register from shared memory
         int shmid = shmget(controller_pid, sizeof(struct app_register*), 0);
@@ -57,12 +66,15 @@ namespace AppRegister
             std::cerr << "ERROR: While deallocating app_register from shared memory" << std::endl;
             exit(EXIT_FAILURE);
         }
-        int semid = semget(controller_pid, 1, 0);
+
+        binarySemaphorePost(semid);
         union semun ignored_argument;
         err = semctl(semid, 1, IPC_RMID, ignored_argument);
         if(semid == -1 || err == -1){
             std::cerr << "ERROR: While destroying app_register's semaphore" << std::endl;
             exit(EXIT_FAILURE);
         }
+
+        return new_apps;
     }
 }
