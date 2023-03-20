@@ -1,4 +1,5 @@
 #include "AppRegisterServer/App.h"
+#include "AppRegisterServer/AppUtils.h"
 #include "AppRegisterServer/CGroupUtils.h"
 
 #include <iostream>
@@ -27,7 +28,11 @@ namespace App
     }
 
     App::~App()
-    {
+    {   
+
+        if (AppUtils::isAppRunning(descriptor.pid))
+            AppUtils::killApp(descriptor.pid);
+
         int errCtl = shmctl(descriptor.segment_id, IPC_RMID, 0);
         int errDt = shmdt(data); 
         if(errCtl == -1 || errDt == -1){
@@ -38,6 +43,6 @@ namespace App
         if (error==-1){
             std::cerr << "ERROR: While removing CGroups" << std::endl;
             exit(EXIT_FAILURE);
-        } 
+        }
     }
 }
