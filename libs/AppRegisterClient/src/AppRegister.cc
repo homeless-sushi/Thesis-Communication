@@ -22,7 +22,14 @@ struct app_data* registerAttach(
     pid_t controllerPid = getControllerPid(DEFAULT_CONTROLLER_NAME);
 
     /*--- begin app_data initialization ---*/
-    //create shared memory to store application struct app_data structure
+    // create semaphore associated with struct app_data
+    int dataSemId = semget(getpid(), 1, IPC_CREAT | IPC_EXCL | 0666);
+    union semun argument;
+    unsigned short values[1] = {1};
+    argument.array = values;
+    int semval = semctl(dataSemId, 0, SETALL, argument);
+
+    // create struct app_data in shared memory
     int dataSegmentId = shmget(getpid(), sizeof(struct app_data), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     struct app_data* data = (struct app_data*) shmat(dataSegmentId, 0, 0);
     if (dataSegmentId == -1 || data == (void*)-1){
@@ -30,7 +37,7 @@ struct app_data* registerAttach(
       exit(EXIT_FAILURE); 
     }
 
-    //initialize struct app_data structure
+    //initialize struct app_data
     data->segment_id = dataSegmentId;
     data->use_gpu = 0;
     data->u_sleep_time = 0;
@@ -51,13 +58,13 @@ struct app_data* registerAttach(
 
     /*--- begin app_register initialization ---*/
     //lock
-    int semId = semget (controllerPid, 1, 0);
-    binarySemaphoreWait(semId);
+    int registerSemId = semget (controllerPid, 1, 0);
+    binarySemaphoreWait(registerSemId);
 
     //attach to app_register in shared memory
     int registerSegmentId = shmget(controllerPid, sizeof(struct app_register), 0);
     struct app_register* appRegister = (struct app_register*) shmat (registerSegmentId, 0, 0);
-    if (registerSegmentId == -1 || semId == -1 || appRegister == (void*)-1){
+    if (registerSegmentId == -1 || registerSemId == -1 || appRegister == (void*)-1){
         std::cerr << "ERROR: While attaching to app_register in shared memory" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -75,7 +82,7 @@ struct app_data* registerAttach(
     appRegister->n_new++;
 
     //unlock
-    binarySemaphorePost(semId);
+    binarySemaphorePost(registerSemId);
     /*--- end app_register initialization ---*/
 
     return data;
@@ -85,11 +92,11 @@ int registerDetach(struct app_data* data)
 { 
     pid_t controllerPid = getControllerPid(DEFAULT_CONTROLLER_NAME);
     //lock  
-    int semId = semget (controllerPid, 1, 0);
-    binarySemaphoreWait(semId);
+    int registerSemId = semget (controllerPid, 1, 0);
+    binarySemaphoreWait(registerSemId);
     int registerSegmentId = shmget(controllerPid, sizeof(struct app_register), 0);
     struct app_register* appRegister = (struct app_register*) shmat (registerSegmentId, 0, 0);
-    if (registerSegmentId == -1 || semId == -1 || appRegister == (void*)-1) {
+    if (registerSegmentId == -1 || registerSemId == -1 || appRegister == (void*)-1) {
         std::cerr << "Something wrong happened during controller shared memory attaching" << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -100,14 +107,23 @@ int registerDetach(struct app_data* data)
     appRegister->detached_apps[appRegister->n_detached] = getpid();
     appRegister->n_detached++;
     //unlock
-    binarySemaphorePost(semId);
+    binarySemaphorePost(registerSemId);
 
-    //delete shared memory for the application struct app_data structure
+    //delete shared memory for the application app_data 
     int segmentId = data->segment_id;
     int errorDt = shmdt(data);
     if(errorDt == -1){
         std::cerr << "ERROR: While detaching from shared memory" << std::endl;
         exit (EXIT_FAILURE);
+    }
+
+    //delete semaphore for the application app_data
+    int dataSemId = semget(controllerPid, 1, 0);
+    union semun ignored_argument;
+    int err = semctl(dataSemId, 1, IPC_RMID, ignored_argument);
+    if(dataSemId == -1 || err == -1){
+        std::cerr << "ERROR: While destroying app_data's semaphore" << std::endl;
+        exit(EXIT_FAILURE);
     }
 
     return 0;
