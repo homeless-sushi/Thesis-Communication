@@ -20,6 +20,8 @@ int registerDetach(struct app_data* data);
 void addTick(struct app_data* data, int n_ticks);
 //Set requested throughput
 void setRequestedThroughput(struct app_data*, long double requested_throughput);
+//True if application has been registered
+bool isRegistered(struct app_data* data);
 //Get use_gpu
 bool getUseGpu(struct app_data* data);
 //Get precision_level 

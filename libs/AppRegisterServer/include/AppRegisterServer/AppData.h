@@ -15,6 +15,8 @@ namespace AppData
     struct ticks getCurrTicks(struct app_data* data);
     //Get requested throughput
     double getRequestedThroughput(struct app_data* data);
+    //Set is_registered
+    void setRegistered(struct app_data* data, bool value);
     //Set use_gpu
     void setUseGpu(struct app_data* data, bool value);
     //Set precision_level
