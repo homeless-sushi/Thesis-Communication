@@ -13,6 +13,9 @@ namespace App
 
             App(app_descriptor descriptor);
             ~App();
+
+            void lock();
+            void unlock();
     };
 }
 

@@ -45,4 +45,16 @@ namespace App
             exit(EXIT_FAILURE);
         }
     }
+
+    void App::lock()
+    {
+        int semId = semget(descriptor.pid, 1, 0);
+        binarySemaphorePost(semId);
+    }
+
+    void App::unlock()
+    {
+        int semId = semget(descriptor.pid, 1, 0);
+        binarySemaphorePost(semId);
+    }
 }
