@@ -1,8 +1,11 @@
 #include "AppRegisterServer/App.h"
+#include "AppRegisterServer/AppData.h"
 #include "AppRegisterServer/AppUtils.h"
 #include "AppRegisterServer/CGroupUtils.h"
 
+#include <algorithm>
 #include <iostream>
+#include <stdexcept>
 
 #include <sys/shm.h>
 #include <sys/types.h>
@@ -12,8 +15,13 @@
 
 namespace App 
 {
-    App::App(app_descriptor descriptor) :
-        descriptor(descriptor)
+    App::App(
+        app_descriptor descriptor,
+        unsigned int ticksSWMaxSize
+    ) :
+        descriptor(descriptor),
+        ticksSlidingWindow(),
+        ticksSWMaxSize(ticksSWMaxSize)
     {
         data = (struct app_data*) shmat(descriptor.segment_id, 0, 0);
         if(data == (void*) -1){
@@ -56,5 +64,30 @@ namespace App
     {
         int semId = semget(descriptor.pid, 1, 0);
         binarySemaphorePost(semId);
+    }
+
+    double App::getThroughput(unsigned int sampleWindow)
+    {
+        if(sampleWindow <= 0 || sampleWindow > ticksSWMaxSize){
+            throw std::range_error("Invalid sample window");
+        }
+
+        if(ticksSlidingWindow.size() == ticksSWMaxSize){
+            ticksSlidingWindow.pop_front();
+        }
+        ticksSlidingWindow.push_back(AppData::getCurrTicks(data));
+        unsigned int currentSize = ticksSlidingWindow.size();
+
+        unsigned int actualSampleWindow = std::min(sampleWindow, currentSize);
+        long long unsigned totalTicks = 0;
+        for(unsigned int i = 0; i < actualSampleWindow; i++){
+            totalTicks+=ticksSlidingWindow[currentSize-1 - i].value;
+        } 
+        long double totalTime = ticksSlidingWindow.back().end - ticksSlidingWindow[currentSize - actualSampleWindow].start;
+
+        if(totalTime == 0){
+            return 0;
+        }
+        return totalTicks/totalTime;
     }
 }

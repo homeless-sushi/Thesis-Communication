@@ -41,6 +41,7 @@ struct ticks
 struct app_data
 {
     int segment_id;         /**< ID of the segment where this is stored */
+    bool registered;      /**< the application has been registered */
 
     struct ticks from_start;    /**< ticks from app's start to the last control cycle  */
     struct ticks curr_period;   /**< ticks since the last control cycle  */

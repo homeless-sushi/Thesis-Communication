@@ -39,6 +39,7 @@ struct app_data* registerAttach(
 
     //initialize struct app_data
     data->segment_id = dataSegmentId;
+    data->registered = false;
     data->use_gpu = 0;
     data->u_sleep_time = 0;
     data->precision_level = 0;
@@ -161,6 +162,11 @@ pid_t getControllerPid(const char* controller_name)
 void setRequestedThroughput(struct app_data* data, long double requested_throughput)
 {
     data->requested_throughput = requested_throughput;
+}
+
+bool isRegistered(struct app_data *data) 
+{
+    return data->registered;
 }
 
 bool getUseGpu(struct app_data *data) 
