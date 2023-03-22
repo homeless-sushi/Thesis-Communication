@@ -45,15 +45,16 @@ struct app_data* registerAttach(
     data->n_cpu_cores = 1;
     data->requested_throughput = requested_throughput;
 
-    //first entry contains 0 ticks at time zero (from application start!)
-    data->ticks[0].value = 0;
-    data->ticks[0].time  = 0;
-    data->curr_tick = 0; 
+    //initialize ticks
     struct timeval tv;
     struct timezone tz;
     gettimeofday(&tv, &tz);
-    data->start_time = tv.tv_sec + 0.000001*tv.tv_usec;
-    data->lastTimeSample = data->start_time;
+    long double now = tv.tv_sec + 0.000001*tv.tv_usec;
+    data->from_start.start = now;
+    data->from_start.end = now;
+    data->curr_period.start = now;
+    data->curr_period.end = now;
+    data->lastTimeSample = now;
     /*--- end data initialization ---*/
 
     /*--- begin app_register initialization ---*/
@@ -129,15 +130,13 @@ int registerDetach(struct app_data* data)
     return 0;
 }
 
-void addTick(struct app_data *data, int value) 
+void addTick(struct app_data* data, int n_ticks)
 {
-    int next = (data->curr_tick + 1) % MAX_TICKS_SIZE; 
     struct timeval tv;
     struct timezone tz;
     gettimeofday(&tv, &tz);
-    data->ticks[next].value = data->ticks[data->curr_tick].value + value;
-    data->ticks[next].time = (tv.tv_sec + 0.000001*tv.tv_usec) - data->start_time;
-    data->curr_tick = next;
+    data->curr_period.value+=n_ticks;
+    data->curr_period.end = (tv.tv_sec + 0.000001*tv.tv_usec);
 }
 
 pid_t getControllerPid(const char* controller_name) 

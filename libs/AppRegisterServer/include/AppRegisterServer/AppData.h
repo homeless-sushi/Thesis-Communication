@@ -10,9 +10,9 @@ namespace AppData
     //Get pointer to app_data
     struct app_data* getAppData(int segment_id);
     //Get global throughput
-    double getGlobalThroughput(struct app_data* data);
+    struct ticks getPrevTicks(struct app_data* data);
     //Get current throughput 
-    double getCurrThroughput(struct app_data* data, int window = DEFAULT_TIME_WINDOW);
+    struct ticks getCurrTicks(struct app_data* data);
     //Get requested throughput
     double getRequestedThroughput(struct app_data* data);
     //Set use_gpu

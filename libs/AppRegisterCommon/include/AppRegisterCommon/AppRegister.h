@@ -25,10 +25,11 @@
 /**
  * A struct used to collect ticks
  */
-struct tick
+struct ticks
 {
-    long long value;  /**< total accumulated ticks */
-    long double time; /**< time elapsed since the application start */
+    long long unsigned value;           /**< total accumulated ticks */
+    long double start;     /**< timestamp of tick before the first */
+    long double end;         /**< timestamp of last tick*/
 };
 
 /**
@@ -41,8 +42,8 @@ struct app_data
 {
     int segment_id;         /**< ID of the segment where this is stored */
 
-    struct tick ticks[MAX_TICKS_SIZE];  /**< sliding window of ticks */
-    int curr_tick;                      /**< position of the last tick */
+    struct ticks from_start;    /**< ticks from app's start to the last control cycle  */
+    struct ticks curr_period;   /**< ticks since the last control cycle  */
 
     long double requested_throughput;   /**< requested throughtput by the application */
 

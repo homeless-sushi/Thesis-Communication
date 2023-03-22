@@ -17,7 +17,7 @@ struct app_data* registerAttach(const char* app_name, long double requested_thro
 int registerDetach(struct app_data* data);
 
 //Send a tick to the register to which the application is connected
-void addTick(struct app_data*, int n_ticks);
+void addTick(struct app_data* data, int n_ticks);
 //Set requested throughput
 void setRequestedThroughput(struct app_data*, long double requested_throughput);
 //Get use_gpu
