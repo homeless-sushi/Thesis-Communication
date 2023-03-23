@@ -28,6 +28,9 @@ namespace Policy
             Policy(unsigned int nCores);
             virtual ~Policy();
             virtual void run(int cycle) = 0;
+
+            void lock();
+            void unlock();
     };
 }
 
