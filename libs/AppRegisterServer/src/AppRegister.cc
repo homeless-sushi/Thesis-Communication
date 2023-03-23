@@ -50,7 +50,6 @@ namespace AppRegister
     {
         pid_t controller_pid = getpid();
         int semid = semget (controller_pid, 1, 0);
-        binarySemaphoreWait(semid);
 
         // Get the newly registered apps
         std::vector<pid_t> new_apps(app_register->n_new);
@@ -67,7 +66,6 @@ namespace AppRegister
             exit(EXIT_FAILURE);
         }
 
-        binarySemaphorePost(semid);
         union semun ignored_argument;
         err = semctl(semid, 1, IPC_RMID, ignored_argument);
         if(semid == -1 || err == -1){

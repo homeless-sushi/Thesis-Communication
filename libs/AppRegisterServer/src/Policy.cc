@@ -45,7 +45,9 @@ namespace Policy
 
     Policy::~Policy()
     {
+        lock();
         std::vector<pid_t> newApps = AppRegister::registerDestroy(appRegister);
+        unlock();
         for(pid_t newApp : newApps)
             AppUtils::killApp(newApp);
 
@@ -80,12 +82,7 @@ namespace Policy
     }
 
     std::vector<pid_t> Policy::deregisterDetachedApps()
-    {
-        //lock
-        pid_t controllerId = getpid();
-        int semId = semget (controllerId, 1, 0);
-        binarySemaphoreWait(semId);
-        
+    {        
         //deregister detached apps
         std::vector<pid_t> deregisteredApps;
         for(int i = 0; i < appRegister->n_detached; i++){
@@ -95,19 +92,11 @@ namespace Policy
         }
         appRegister->n_detached = 0;
 
-        //unlock
-        binarySemaphorePost(semId);
-
         return deregisteredApps;
     }
 
     std::vector<pid_t> Policy::registerNewApps()
     {
-        //lock
-        pid_t controllerId = getpid();
-        int semId = semget (controllerId, 1, 0);
-        binarySemaphoreWait(semId);
-
         //register new apps
         std::vector<pid_t> newApps;
         for(int i = 0; i < appRegister->n_new; i++){
@@ -117,9 +106,20 @@ namespace Policy
         }
         appRegister->n_new = 0;
 
-        //unlock
-        binarySemaphorePost(semId);
-
         return newApps;
+    }
+
+    void Policy::lock()
+    {
+        pid_t controllerId = getpid();
+        int semId = semget (controllerId, 1, 0);
+        binarySemaphoreWait(semId);
+    }
+
+    void Policy::unlock()
+    {
+        pid_t controllerId = getpid();
+        int semId = semget (controllerId, 1, 0);
+        binarySemaphorePost(semId);
     }
 }
