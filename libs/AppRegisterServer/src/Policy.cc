@@ -19,7 +19,10 @@ namespace Policy
 {
     Policy::Policy(unsigned int nCores)
     {
+        AppRegister::registerSemaphoreCreate();
+        lock();
         appRegister = AppRegister::registerCreate(nCores);
+        unlock();
 
         // Setup CGroups
         int error = CGroupUtils::Setup(nCores);
@@ -48,6 +51,8 @@ namespace Policy
         lock();
         std::vector<pid_t> newApps = AppRegister::registerDestroy(appRegister);
         unlock();
+        AppRegister::registerSemaphoreDestroy();
+        
         for(pid_t newApp : newApps)
             AppUtils::killApp(newApp);
 

@@ -22,22 +22,13 @@ namespace AppRegister
     {
         pid_t controller_pid = getpid();
 
-        // Initialized app_register and its companion semaphore.
-        // the semaphore is used for mutually exclusive access of the register 
-        // between applications and controller
-        int semid = semget(controller_pid, 1, IPC_CREAT | IPC_EXCL | 0666);
-        union semun argument;
-        unsigned short values[1] = {1};
-        argument.array = values;
-        int semval = semctl(semid, 0, SETALL, argument);
-
+        // Initialized app_register
         int shmid = shmget(controller_pid, sizeof(struct app_register), IPC_CREAT | IPC_EXCL | 0666);
         struct app_register* app_register = (struct app_register*) shmat(shmid, 0, 0);
-        if(semid == -1 || semval == -1 || shmid == -1 || app_register==(void*)-1){
+        if(shmid == -1 || app_register==(void*)-1){
             std::cerr << "ERROR: While initializing app_register in shared memory" << std::endl;
             exit(EXIT_FAILURE);
         }
-        //
 
         // Initialize counters of applications
         app_register->n_new = 0;
@@ -49,7 +40,6 @@ namespace AppRegister
     std::vector<pid_t> registerDestroy(struct app_register* app_register) 
     {
         pid_t controller_pid = getpid();
-        int semid = semget (controller_pid, 1, 0);
 
         // Get the newly registered apps
         std::vector<pid_t> new_apps(app_register->n_new);
@@ -66,13 +56,30 @@ namespace AppRegister
             exit(EXIT_FAILURE);
         }
 
+        return new_apps;
+    }
+
+    void registerSemaphoreCreate()
+    {
+        int semId = semget(getpid(), 1, IPC_CREAT | IPC_EXCL | 0666);
+        union semun argument;
+        unsigned short values[1] = {1};
+        argument.array = values;
+        int err = semctl(semId, 0, SETALL, argument);
+        if(semId == -1 || err == -1){
+            std::cerr << "ERROR: While initializing app_register's semaphore" << std::endl;
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    void registerSemaphoreDestroy()
+    {
+        int semId = semget (getpid(), 1, 0);
         union semun ignored_argument;
-        err = semctl(semid, 1, IPC_RMID, ignored_argument);
-        if(semid == -1 || err == -1){
+        int err = semctl(semId, 1, IPC_RMID, ignored_argument);
+        if(semId == -1 || err == -1){
             std::cerr << "ERROR: While destroying app_register's semaphore" << std::endl;
             exit(EXIT_FAILURE);
         }
-
-        return new_apps;
     }
 }
