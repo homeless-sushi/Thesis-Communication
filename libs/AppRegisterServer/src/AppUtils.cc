@@ -59,7 +59,7 @@ namespace AppUtils
             }      
         }
         //Kill process
-        kill(pid, SIGKILL);
+        kill(pid, SIGINT);
     }
 
     void UpdateCpuSet(pid_t pid, std::vector<int> cores) 
