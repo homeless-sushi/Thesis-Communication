@@ -131,6 +131,18 @@ int registerDetach(struct app_data* data)
     return 0;
 }
 
+void setTickStartTime(struct app_data* data)
+{
+    struct timeval tv;
+    struct timezone tz;
+    gettimeofday(&tv, &tz);
+    long double now = (tv.tv_sec + 0.000001*tv.tv_usec);
+    data->from_start.start = now;
+    data->from_start.end = now;
+    data->curr_period.start = now;
+    data->curr_period.end = now;
+}
+
 void addTick(struct app_data* data, int n_ticks)
 {
     struct timeval tv;

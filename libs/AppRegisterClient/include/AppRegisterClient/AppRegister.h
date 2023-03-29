@@ -16,6 +16,8 @@ struct app_data* registerAttach(const char* app_name, long double requested_thro
 //Detach the application from the app_register
 int registerDetach(struct app_data* data);
 
+//Set app start time
+void setTickStartTime(struct app_data* data);
 //Send a tick to the register to which the application is connected
 void addTick(struct app_data* data, int n_ticks);
 //Set requested throughput
