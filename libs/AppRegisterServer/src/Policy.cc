@@ -127,4 +127,13 @@ namespace Policy
         int semId = semget (controllerId, 1, 0);
         binarySemaphorePost(semId);
     }
+
+    long double getWindowThroughput(struct ticks windowTicks)
+    {
+        long double deltaTime = windowTicks.end - windowTicks.start;
+        if(deltaTime == 0)
+            return 0;
+        
+        return windowTicks.value/deltaTime;
+    }
 }
