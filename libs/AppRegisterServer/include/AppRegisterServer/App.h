@@ -27,7 +27,8 @@ namespace App
             void lock();
             void unlock();
 
-            double getThroughput(unsigned int samplesWindow = 1);
+            void readTicks();
+            struct ticks getWindowTicks(unsigned int sampleWindow = 1);
     };
 }
 
