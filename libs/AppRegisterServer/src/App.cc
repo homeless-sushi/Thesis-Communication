@@ -66,28 +66,32 @@ namespace App
         binarySemaphorePost(semId);
     }
 
-    double App::getThroughput(unsigned int sampleWindow)
+    void App::readTicks()
+    {
+        if(ticksSlidingWindow.size() == ticksSWMaxSize){
+            ticksSlidingWindow.pop_front();
+        }
+        ticksSlidingWindow.push_back(AppData::getCurrTicks(data));
+    }
+
+    struct ticks App::getWindowTicks(unsigned int sampleWindow)
     {
         if(sampleWindow <= 0 || sampleWindow > ticksSWMaxSize){
             throw std::range_error("Invalid sample window");
         }
 
-        if(ticksSlidingWindow.size() == ticksSWMaxSize){
-            ticksSlidingWindow.pop_front();
-        }
-        ticksSlidingWindow.push_back(AppData::getCurrTicks(data));
+        struct ticks ticksInWindow = {0, 0, 0};
+
         unsigned int currentSize = ticksSlidingWindow.size();
-
         unsigned int actualSampleWindow = std::min(sampleWindow, currentSize);
-        long long unsigned totalTicks = 0;
-        for(unsigned int i = 0; i < actualSampleWindow; i++){
-            totalTicks+=ticksSlidingWindow[currentSize-1 - i].value;
-        } 
-        long double totalTime = ticksSlidingWindow.back().end - ticksSlidingWindow[currentSize - actualSampleWindow].start;
 
-        if(totalTime == 0){
-            return 0;
-        }
-        return totalTicks/totalTime;
+        for(unsigned int i = 0; i < actualSampleWindow; i++){
+            ticksInWindow.value+=ticksSlidingWindow[currentSize-1 - i].value;
+        } 
+
+        ticksInWindow.start = ticksSlidingWindow[currentSize - actualSampleWindow].start;
+        ticksInWindow.end = ticksSlidingWindow.back().end;
+        
+        return ticksInWindow;
     }
 }
