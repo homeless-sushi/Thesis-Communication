@@ -32,6 +32,8 @@ namespace Policy
             void lock();
             void unlock();
     };
+
+    long double getWindowThroughput(struct ticks windowTicks);
 }
 
 #endif //APP_REGISTER_SERVER_POLICY
