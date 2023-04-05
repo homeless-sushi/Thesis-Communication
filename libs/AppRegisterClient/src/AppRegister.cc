@@ -206,12 +206,9 @@ void autosleep(struct app_data* data, long double ref_thr) {
     struct timezone tz;
     gettimeofday(&tv, &tz);
     long double curr_time = tv.tv_sec + 0.000001*tv.tv_usec;
-    data->u_sleep_time = (1.0/ref_thr - (curr_time - data->lastTimeSample))*1000000;
+    long double last_tick_time = data->curr_period.end;
+    long double u_sleep_time = (1.0/ref_thr - (curr_time - last_tick_time))*1000000;
 
-    if(data->u_sleep_time>0)
-        usleep(data->u_sleep_time);
-    else
-        data->u_sleep_time = 0;
-    gettimeofday(&tv, &tz);
-    data->lastTimeSample = tv.tv_sec + 0.000001*tv.tv_usec;  
+    if(u_sleep_time>0)
+        usleep(u_sleep_time);
 }
