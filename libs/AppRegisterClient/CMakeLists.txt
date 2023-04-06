@@ -1,6 +1,7 @@
 #When the project is built, create this library
 add_library(AppRegister_Client_Lib STATIC
     "src/AppRegister.cc"
+    "src/Utils.cc"
 )
 
 #Add to the include path
