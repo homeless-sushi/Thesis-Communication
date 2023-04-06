@@ -52,7 +52,7 @@ namespace CGroupUtils {
       struct cgroup_controller *p_cg_contr_cpu;
       struct cgroup_controller *p_cg_contr_freezer;
 
-      std::cout << "SETUP" << std::endl;
+      std::cerr << "SETUP" << std::endl;
 
 
       // Creating a sample CGroup with the app PID
@@ -74,7 +74,7 @@ namespace CGroupUtils {
           std::cerr << "Error: " << cgroup_strerror(result) << " -- " << controller[id] << std::endl;
           return -1;
         } else {
-          std::cout << "CGroup controller [" << controller[id] << "] available at [" << mounts[id]<< "]" << std::endl;
+          std::cerr << "CGroup controller [" << controller[id] << "] available at [" << mounts[id]<< "]" << std::endl;
         }
       }
       
@@ -179,7 +179,7 @@ namespace CGroupUtils {
       std::string cg_name = std::to_string(appID);
       std::string app_mount_point = MAINGROUP + cg_name;
 
-      std::cout << "INIT" << std::endl;
+      std::cerr << "INIT" << std::endl;
 
 
       p_cg = cgroup_new_cgroup(app_mount_point.c_str());
@@ -283,7 +283,7 @@ namespace CGroupUtils {
       int result = 0;
       struct cgroup *p_cg;
 
-      std::cout << "REMOVE" << std::endl;
+      std::cerr << "REMOVE" << std::endl;
       
       // Creating a sample CGroup with the app PID
       std::string cg_name = std::to_string(appID);
@@ -315,7 +315,7 @@ namespace CGroupUtils {
       int result = 0;
       struct cgroup *p_cg;
       
-      std::cout << "DESTROY" << std::endl;
+      std::cerr << "DESTROY" << std::endl;
       
       // Creating a sample CGroup with the app PID
       std::string app_mount_point = MAINGROUP;
@@ -347,7 +347,7 @@ namespace CGroupUtils {
       struct cgroup *p_cg;
       struct cgroup_controller *p_cg_contr_cpuset;
 
-      std::cout << "UPDATE CPUSET" << std::endl;
+      std::cerr << "UPDATE CPUSET" << std::endl;
 
       // Creating a sample CGroup with the app PID
       std::string cg_name = std::to_string(appID);
