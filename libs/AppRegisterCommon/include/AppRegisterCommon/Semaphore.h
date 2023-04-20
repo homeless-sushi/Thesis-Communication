@@ -2,7 +2,7 @@
 #define APP_REGISTER_COMMON_SEMAPHORE
 
 // Wrapper functions for Semaphore Wait and Post
-void binarySemaphoreWait(int semId);
-void binarySemaphorePost(int semId);
+int binarySemaphoreWait(int semId);
+int binarySemaphorePost(int semId);
 
 #endif //APP_REGISTER_COMMON_SEMAPHORE
