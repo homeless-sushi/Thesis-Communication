@@ -120,7 +120,7 @@ int registerDetach(struct app_data* data)
     }
 
     //delete semaphore for the application app_data
-    int dataSemId = semget(controllerPid, 1, 0);
+    int dataSemId = semget(getpid(), 1, 0);
     union semun ignored_argument;
     int err = semctl(dataSemId, 1, IPC_RMID, ignored_argument);
     if(dataSemId == -1 || err == -1){
