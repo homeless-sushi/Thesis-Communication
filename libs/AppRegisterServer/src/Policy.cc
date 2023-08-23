@@ -17,7 +17,8 @@
 
 namespace Policy 
 {
-    Policy::Policy(unsigned int nCores)
+    Policy::Policy(unsigned int nCores) :
+        nCores{nCores}
     {
         AppRegister::registerSemaphoreCreate();
         lock();

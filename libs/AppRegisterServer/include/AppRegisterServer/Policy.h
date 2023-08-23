@@ -17,6 +17,8 @@ namespace Policy
     class Policy 
     {
         protected:
+            unsigned int nCores;
+
             struct app_register* appRegister;
             std::map<pid_t, std::unique_ptr<App::App>> registeredApps;
 
