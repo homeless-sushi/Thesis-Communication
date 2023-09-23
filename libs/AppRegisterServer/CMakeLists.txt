@@ -7,7 +7,8 @@ add_library(AppRegister_Server_Lib STATIC
     "src/App.cc"
     "src/Policy.cc"
     "src/Utilization.cc"
-    "src/Frequency.cc")
+    "src/Frequency.cc"
+    "src/Sensors.cc")
 
 #Add to the include path
 target_include_directories(AppRegister_Server_Lib PUBLIC "include")
