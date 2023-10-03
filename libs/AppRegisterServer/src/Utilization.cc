@@ -1,6 +1,8 @@
 #include "AppRegisterServer/Utilization.h"
 
+#include <array>
 #include <iostream>	
+#include <memory>
 #include <string>
 
 #include <cstdio>	
@@ -18,7 +20,7 @@ namespace Utilization
         prevIdleUtilization(nCores, 0)
     {}
 
-    int Utilization::computeCoreUtilization(
+    int Utilization::computeCpuUtilizationHelper(
         int cpu_idx, 
         long int user, 
         long int nice, 
@@ -53,7 +55,7 @@ namespace Utilization
         return usage;
     }
 
-    std::vector<int> Utilization::computeUtilization()
+    std::vector<int> Utilization::computeCpuUtilization()
     {
         char buf[80] = {'\0',};
         char cpuid[8] = {'\0',};
@@ -74,12 +76,28 @@ namespace Utilization
             
             if(!strncmp(buf, temp, 4)){
                 sscanf(buf, "%s %ld %ld %ld %ld %ld %ld %ld %ld", cpuid, &user, &nice, &system, &idle, &iowait, &irq, &softirq, &steal);
-                currUtilizations[cpu_index] = computeCoreUtilization(cpu_index, user, nice, system, idle, iowait, irq, softirq, steal);
+                currUtilizations[cpu_index] = computeCpuUtilizationHelper(cpu_index, user, nice, system, idle, iowait, irq, softirq, steal);
                 r = fgets(buf, 80, fp);
             }
         }
         fclose(fp);
 
         return currUtilizations;
+    }
+
+    int Utilization::computeGpuUtilization(){
+        std::string cmd("cat /sys/devices/57000000.gpu/load");
+
+        std::array<char, 128> buffer;
+        std::string result;
+        std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(cmd.c_str(), "r"), pclose);
+        if (!pipe) {
+            std::cerr << "ERROR: While calling popen()" << std::endl;
+        }
+        while (fgets(buffer.data(), buffer.size(), pipe.get()) != nullptr) {
+            result += buffer.data();
+        }
+
+        return std::stoi(result.c_str());
     }
 }

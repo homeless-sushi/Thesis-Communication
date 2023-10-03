@@ -10,12 +10,15 @@ namespace Utilization
         public:   
             Utilization(int nCores);
 
-            //Compute utilization across all cores
-            std::vector<int> computeUtilization();
+            //Compute utilization across all cpu cores
+            std::vector<int> computeCpuUtilization();
+
+            //Compute gpu utilization
+            int computeGpuUtilization();
                 
         private:
             //helper method to compute utilization
-            int computeCoreUtilization(int cpu_idx, long int user, long int nice, long int system, long int idle, long int iowait, long int irq, long int softirq, long int steal);
+            int computeCpuUtilizationHelper(int cpu_idx, long int user, long int nice, long int system, long int idle, long int iowait, long int irq, long int softirq, long int steal);
 
             //since core usage is computed between two invocations of the getCPUUitlization() function. 
             //it is necessary to save values collected at the previous invocation to compute the difference with the currently sampled values
