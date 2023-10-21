@@ -176,10 +176,10 @@ namespace Frequency
     int SetGpuFreq(GPU_FRQ freq){
         std::stringstream command;
         command
-            << "sudo echo \"userspace\" | sudo tee /sys/devices/gpu.0/devfreq/57000000.gpu/governor && echo "
-            << getMinGpuFreq() << " | sudo tee /sys/devices/gpu.0/devfreq/57000000.gpu/min_freq && echo "
-            << freq  << " | sudo tee /sys/devices/gpu.0/devfreq/57000000.gpu/max_freq && echo "
-            << freq << " | sudo tee /sys/devices/gpu.0/devfreq/57000000.gpu/min_freq" 
+            << "echo 0 | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/device/railgate_enable && echo "
+            << getMinGpuFreq() << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/min_freq && echo "
+            << freq  << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/max_freq && echo "
+            << freq << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/min_freq" 
             << std::endl;
         return std::system(command.str().c_str());
     };
