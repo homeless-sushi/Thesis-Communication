@@ -92,11 +92,11 @@ namespace Frequency
     int SetCpuFreq(CPU_FRQ freq){
         std::stringstream command;
         command
-            << "sudo echo \"userspace\" | sudo tee /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor && echo "
-            << freq << " | sudo tee /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed && echo "
-            << freq << " | sudo tee /sys/devices/system/cpu/cpu1/cpufreq/scaling_setspeed && echo "
-            << freq << " | sudo tee /sys/devices/system/cpu/cpu2/cpufreq/scaling_setspeed && echo "
-            << freq << " | sudo tee /sys/devices/system/cpu/cpu3/cpufreq/scaling_setspeed" 
+            << "sudo echo \"userspace\" | sudo tee /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor >> /dev/null && " << 
+            "echo " << freq << " | sudo tee /sys/devices/system/cpu/cpu0/cpufreq/scaling_setspeed >> /dev/null && "
+            "echo " << freq << " | sudo tee /sys/devices/system/cpu/cpu1/cpufreq/scaling_setspeed >> /dev/null && "
+            "echo " << freq << " | sudo tee /sys/devices/system/cpu/cpu2/cpufreq/scaling_setspeed >> /dev/null && "
+            "echo " << freq << " | sudo tee /sys/devices/system/cpu/cpu3/cpufreq/scaling_setspeed >> /dev/null" 
             << std::endl;
         return std::system(command.str().c_str());
     };
@@ -176,10 +176,10 @@ namespace Frequency
     int SetGpuFreq(GPU_FRQ freq){
         std::stringstream command;
         command
-            << "echo 0 | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/device/railgate_enable && echo "
-            << getMinGpuFreq() << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/min_freq && echo "
-            << freq  << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/max_freq && echo "
-            << freq << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/min_freq" 
+            << "echo 0 | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/device/railgate_enable >> /dev/null && " <<
+            "echo " << getMinGpuFreq() << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/min_freq >> /dev/null && "
+            "echo " << freq  << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/max_freq >> /dev/null && "
+            "echo " << freq << " | sudo tee /sys/devices/57000000.gpu/devfreq/57000000.gpu/min_freq >> /dev/null" 
             << std::endl;
         return std::system(command.str().c_str());
     };
