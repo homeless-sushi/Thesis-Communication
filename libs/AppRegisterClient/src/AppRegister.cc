@@ -77,10 +77,11 @@ struct app_data* registerAttach(
       exit (EXIT_FAILURE);
     }
 
-    appRegister->new_apps[appRegister->n_new].segment_id  = dataSegmentId;
     appRegister->new_apps[appRegister->n_new].pid         = getpid();
-    appRegister->new_apps[appRegister->n_new].max_threads  = max_threads;
     strcpy(appRegister->new_apps[appRegister->n_new].name, app_name);
+    appRegister->new_apps[appRegister->n_new].segment_id  = dataSegmentId;
+    appRegister->new_apps[appRegister->n_new].gpu_implementation = gpu_implementation;
+    appRegister->new_apps[appRegister->n_new].max_threads  = max_threads;
     appRegister->n_new++;
 
     //unlock
