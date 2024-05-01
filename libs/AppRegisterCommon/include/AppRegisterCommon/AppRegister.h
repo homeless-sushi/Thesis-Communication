@@ -47,6 +47,7 @@ struct app_data
     struct ticks curr_period;   /**< ticks since the last control cycle  */
 
     long double requested_throughput;   /**< requested throughtput by the application */
+    unsigned int minimum_precision;   /**< requested minimum precision by the application */
 
     long double lastTimeSample; /**< last timestamp that has been sampled. it is necessary to implement the autosleep function */
     bool use_gpu;               /**< true if the app must use the GPU */
@@ -68,6 +69,7 @@ struct app_descriptor
     int segment_id;               /**< the id of the memory segment containing the app_data */
     bool gpu_implementation;      /**< true if the application has a GPU implementation */
     int max_threads;              /**< maximum CPU threads used by the application */
+    bool approximate_application; /**< true if the application allows approxiamte execution */
 };
 
 /**

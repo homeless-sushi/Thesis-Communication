@@ -12,7 +12,14 @@ extern "C"
 //Get controller pid
 pid_t getControllerPid(const char* controller_name);
 //Attach the application to the app_register
-struct app_data* registerAttach(const char* app_name, long double requested_throughput, int max_threads, bool gpu_implementation);
+struct app_data* registerAttach(
+    const char* app_name, 
+    long double requested_throughput, 
+    int max_threads,
+    bool gpu_implementation,
+    bool approximate_application = false,
+    unsigned int minimum_precision = 100
+);
 //Detach the application from the app_register
 int registerDetach(struct app_data* data);
 
@@ -21,7 +28,9 @@ void setTickStartTime(struct app_data* data);
 //Send a tick to the register to which the application is connected
 void addTick(struct app_data* data, int n_ticks);
 //Set requested throughput
-void setRequestedThroughput(struct app_data*, long double requested_throughput);
+void setRequestedThroughput(struct app_data* data, long double requested_throughput);
+//Set minimum precision
+void setMinimumPrecision(struct app_data* data, unsigned int minimum_precision);
 //True if application has been registered
 bool isRegistered(struct app_data* data);
 //Get use_gpu

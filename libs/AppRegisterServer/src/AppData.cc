@@ -34,6 +34,7 @@ namespace AppData
     }
 
     double getRequestThroughput(struct app_data* data){ return data->requested_throughput; }
+    double getMinimumPrecision(struct app_data* data){ return data->minimum_precision; }
     void setRegistered(struct app_data* data, bool value) { data->registered = value; }
     void setUseGpu(struct app_data* data, bool value) { data->use_gpu = value; }
     void setPrecisionLevel(struct app_data* data, int value) { data->precision_level = value;}

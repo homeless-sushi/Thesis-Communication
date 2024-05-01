@@ -17,7 +17,9 @@ struct app_data* registerAttach(
     const char* app_name,
     long double requested_throughput,
     int max_threads,
-    bool gpu_implementation) 
+    bool gpu_implementation,
+    bool approximate_application,
+    unsigned int minimum_precision) 
 {
     pid_t controllerPid = getControllerPid(DEFAULT_CONTROLLER_NAME);
 
@@ -45,6 +47,7 @@ struct app_data* registerAttach(
     data->precision_level = 0;
     data->n_cpu_cores = 1;
     data->requested_throughput = requested_throughput;
+    data->minimum_precision = minimum_precision;
 
     //initialize ticks
     struct timeval tv;
@@ -82,6 +85,7 @@ struct app_data* registerAttach(
     appRegister->new_apps[appRegister->n_new].segment_id  = dataSegmentId;
     appRegister->new_apps[appRegister->n_new].gpu_implementation = gpu_implementation;
     appRegister->new_apps[appRegister->n_new].max_threads  = max_threads;
+    appRegister->new_apps[appRegister->n_new].approximate_application = approximate_application;
     appRegister->n_new++;
 
     //unlock
@@ -175,6 +179,11 @@ pid_t getControllerPid(const char* controller_name)
 void setRequestedThroughput(struct app_data* data, long double requested_throughput)
 {
     data->requested_throughput = requested_throughput;
+}
+
+void setMinimumPrecision(struct app_data* data, unsigned int minimum_precision)
+{
+    data->minimum_precision = minimum_precision;
 }
 
 bool isRegistered(struct app_data *data) 
