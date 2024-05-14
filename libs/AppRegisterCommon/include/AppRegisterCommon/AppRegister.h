@@ -52,6 +52,8 @@ struct app_data
     long double lastTimeSample; /**< last timestamp that has been sampled. it is necessary to implement the autosleep function */
     bool use_gpu;               /**< true if the app must use the GPU */
     int n_cpu_cores;            /**< number of cpu cores available to the application*/
+    unsigned int cpu_freq;      /**< system's cpu frq*/
+    unsigned int gpu_freq;      /**< system's gpu frq*/
     int u_sleep_time;           /**< in microseconds */
     int precision_level;        /**< percentage of approximation */
 };

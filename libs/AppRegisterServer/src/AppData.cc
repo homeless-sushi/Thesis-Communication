@@ -40,4 +40,6 @@ namespace AppData
     void setPrecisionLevel(struct app_data* data, int value) { data->precision_level = value;}
     void setUSleepTime(struct app_data* data, int value) { data->u_sleep_time = value; }
     void setNCpuCores(struct app_data* data, int value) { data->n_cpu_cores = value; }
+    void setCpuFreq(struct app_data* data, int value) { data->cpu_freq = value; }
+    void setGpuFreq(struct app_data* data, int value) { data->gpu_freq = value; }
 }

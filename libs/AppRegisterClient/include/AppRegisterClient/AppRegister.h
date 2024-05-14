@@ -41,6 +41,10 @@ int getPrecisionLevel(struct app_data* data);
 int getUSleepTime(struct app_data* data);
 //Get n_cpu_cores
 int getNCpuCores(struct app_data* data);
+//Get cpu_freq
+unsigned int getCpuFreq(struct app_data* data);
+//Get gpu_freq
+unsigned int getGpuFreq(struct app_data* data);
 
 //Sleep as to not overshoot the reference throughput
 void autosleep(struct app_data*, long double ref_thr);

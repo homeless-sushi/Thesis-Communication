@@ -27,6 +27,10 @@ namespace AppData
     void setUSleepTime(struct app_data* data, int value);
     //Set n_cpu_cores
     void setNCpuCores(struct app_data* data, int value);
+    //Set cpu_freq
+    void setCpuFreq(struct app_data* data, int value);
+    //Set gpu_freq
+    void setGpuFreq(struct app_data* data, int value);
 }
 
 #endif //APP_REGISTER_CONTROLLER_APP_DATA

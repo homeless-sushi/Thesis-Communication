@@ -211,6 +211,16 @@ int getNCpuCores(struct app_data *data)
     return data->n_cpu_cores;
 }
 
+unsigned int getCpuFreq(struct app_data* data)
+{
+    return data->cpu_freq;
+}
+
+unsigned int getGpuFreq(struct app_data* data)
+{
+    return data->gpu_freq;
+}
+
 void autosleep(struct app_data* data, long double ref_thr) {
     struct timeval tv;
     struct timezone tz;
