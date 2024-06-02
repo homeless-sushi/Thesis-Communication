@@ -19,7 +19,11 @@ namespace Policy
 {
     Policy::Policy(unsigned int nCores) :
         nCores{nCores}
-    {
+    {           
+        for(unsigned int i = 0; i < nCores; i++){
+            freeCores.push_back(i);
+        }
+
         AppRegister::registerSemaphoreCreate();
         lock();
         appRegister = AppRegister::registerCreate(nCores);
@@ -81,6 +85,7 @@ namespace Policy
             if(AppUtils::isAppRunning(pid)){
                 continue;
             }
+            freeCores.insert(freeCores.end(), registeredApps[pid]->currentCores.begin(), registeredApps[pid]->currentCores.end());
             registeredApps.erase(i);
             deadApps.push_back(pid);
         }
@@ -93,6 +98,7 @@ namespace Policy
         std::vector<pid_t> deregisteredApps;
         for(int i = 0; i < appRegister->n_detached; i++){
             pid_t detached_pid = appRegister->detached_apps[i];
+            freeCores.insert(freeCores.end(), registeredApps[detached_pid]->currentCores.begin(), registeredApps[detached_pid]->currentCores.end());
             registeredApps.erase(detached_pid);
             deregisteredApps.push_back(detached_pid);
         }

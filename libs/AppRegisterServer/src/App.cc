@@ -37,6 +37,7 @@ namespace App
 
     App::~App()
     {   
+        nAssignedCores = 0;
 
         if (AppUtils::isAppRunning(descriptor.pid))
             AppUtils::killApp(descriptor.pid);

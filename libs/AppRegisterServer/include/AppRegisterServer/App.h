@@ -2,6 +2,7 @@
 #define APP_REGISTER_SERVER_APP
 
 #include <deque>
+#include <vector>
 
 #include "AppRegisterServer/AppRegister.h"
 
@@ -18,6 +19,11 @@ namespace App
         public:
             struct app_descriptor descriptor;
             struct app_data* data;
+
+            long double currentThroughput;
+
+            unsigned int nAssignedCores;
+            std::vector<int> currentCores;
 
             App(app_descriptor descriptor,
                 unsigned int ticksSWMaxSize = TICKS_SLIDING_WINDOW_DEFAULT_SIZE
