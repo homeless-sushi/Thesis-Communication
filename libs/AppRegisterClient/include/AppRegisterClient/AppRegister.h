@@ -14,6 +14,7 @@ pid_t getControllerPid(const char* controller_name);
 //Attach the application to the app_register
 struct app_data* registerAttach(
     const char* app_name, 
+    unsigned int input_size,
     long double requested_throughput, 
     int max_threads,
     bool gpu_implementation,

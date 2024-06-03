@@ -68,6 +68,7 @@ struct app_descriptor
 {
     pid_t pid;                    /**< the application pid */
     char name[MAX_NAME_SIZE + 1]; /**< the name of the application */
+    unsigned int input_size;      /**< the application's input size */
     int segment_id;               /**< the id of the memory segment containing the app_data */
     bool gpu_implementation;      /**< true if the application has a GPU implementation */
     int max_threads;              /**< maximum CPU threads used by the application */

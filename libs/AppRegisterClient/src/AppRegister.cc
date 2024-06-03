@@ -15,6 +15,7 @@
 
 struct app_data* registerAttach(
     const char* app_name,
+    unsigned int input_size,
     long double requested_throughput,
     int max_threads,
     bool gpu_implementation,
@@ -82,6 +83,7 @@ struct app_data* registerAttach(
 
     appRegister->new_apps[appRegister->n_new].pid         = getpid();
     strcpy(appRegister->new_apps[appRegister->n_new].name, app_name);
+    appRegister->new_apps[appRegister->n_new].input_size = input_size;
     appRegister->new_apps[appRegister->n_new].segment_id  = dataSegmentId;
     appRegister->new_apps[appRegister->n_new].gpu_implementation = gpu_implementation;
     appRegister->new_apps[appRegister->n_new].max_threads  = max_threads;
