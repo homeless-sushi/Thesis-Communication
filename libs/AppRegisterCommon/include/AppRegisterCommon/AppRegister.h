@@ -46,6 +46,8 @@ struct app_data
     struct ticks from_start;    /**< ticks from app's start to the last control cycle  */
     struct ticks curr_period;   /**< ticks since the last control cycle  */
 
+    unsigned int curr_precision; /**< percentage of approximation */
+
     long double requested_throughput;   /**< requested throughtput by the application */
     unsigned int minimum_precision;   /**< requested minimum precision by the application */
 

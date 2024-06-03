@@ -29,6 +29,8 @@ int registerDetach(struct app_data* data);
 void setTickStartTime(struct app_data* data);
 //Send a tick to the register to which the application is connected
 void addTick(struct app_data* data, int n_ticks);
+//Set current precision
+void setCurrPrecision(struct app_data* data, unsigned int curr_precision);
 //Set requested throughput
 void setRequestedThroughput(struct app_data* data, long double requested_throughput);
 //Set minimum precision

@@ -50,6 +50,7 @@ struct app_data* registerAttach(
     data->n_cpu_cores = 1;
     data->requested_throughput = requested_throughput;
     data->minimum_precision = minimum_precision;
+    data->curr_precision = 100;
 
     //initialize ticks
     struct timeval tv;
@@ -178,6 +179,10 @@ pid_t getControllerPid(const char* controller_name)
     }
     pclose(fp);
     return controller_pid;
+}
+
+void setCurrPrecision(struct app_data* data, unsigned int curr_precision){
+    data->curr_precision = curr_precision;
 }
 
 void setRequestedThroughput(struct app_data* data, long double requested_throughput)

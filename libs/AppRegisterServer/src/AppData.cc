@@ -33,6 +33,7 @@ namespace AppData
         return curr_ticks;
     }
 
+    unsigned int getCurrPrecision(struct app_data* data){ return data->curr_precision; }
     double getRequestedThroughput(struct app_data* data){ return data->requested_throughput; }
     double getMinimumPrecision(struct app_data* data){ return data->minimum_precision; }
     void setRegistered(struct app_data* data, bool value) { data->registered = value; }

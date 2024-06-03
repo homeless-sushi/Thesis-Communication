@@ -13,6 +13,8 @@ namespace AppData
     struct ticks getPrevTicks(struct app_data* data);
     //Get current throughput 
     struct ticks getCurrTicks(struct app_data* data);
+    //Get current input size
+    unsigned int getCurrPrecision(struct app_data* data);
     //Get requested throughput
     double getRequestedThroughput(struct app_data* data);
     //Get requested precision
