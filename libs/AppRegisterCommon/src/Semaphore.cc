@@ -3,6 +3,9 @@
 #include <fstream>
 #include <iostream>
 
+#include <cstring> 
+#include <cerrno>
+
 #include <sys/sem.h>
 
 int binarySemaphoreWait(int semId)
@@ -13,8 +16,8 @@ int binarySemaphoreWait(int semId)
     operations[0].sem_flg = SEM_UNDO;
     int error = semop(semId, operations, 1);
     if (error == -1){
-        std::cerr << "ERROR: During semaphore wait" << std::endl;
-        return error;
+        std::cerr << "ERROR: During semaphore wait, " << std::strerror(errno) << std::endl;
+        return -1;
     }
 
     return 0;
@@ -28,8 +31,8 @@ int binarySemaphorePost(int semId)
     operations[0].sem_flg = SEM_UNDO;
     int error = semop (semId, operations, 1);
     if (error == -1){
-        std::cerr << "ERROR: During semaphore post" << std::endl;
-        return error; 
+        std::cerr << "ERROR: During semaphore post, " << std::strerror(errno) << std::endl;
+        return -1; 
     }
 
     return 0;
